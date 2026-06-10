@@ -31,7 +31,8 @@ Greek question?
 - word — ...
 
 Особенности:
-Short grammar/usage notes.
+- Short grammar/usage note.
+- Another grammar/usage note.
 
 ---
 
@@ -64,6 +65,7 @@ Why this answer is correct.
 - Use short Russian translations directly under each Greek question/option with blockquote `>`.
 - Mark exactly one correct option with `- ✅ ВЕРНО` unless the user explicitly says the question has multiple correct answers.
 - Use backticks for key Greek phrases in notes and for the final correct answer.
+- Format `Особенности:` as a Markdown bullet list: every feature/note must start with `-`.
 - Keep the card concise enough to match the repository style; remove duplicated prose from the user's raw input.
 
 ## Fact Checking
