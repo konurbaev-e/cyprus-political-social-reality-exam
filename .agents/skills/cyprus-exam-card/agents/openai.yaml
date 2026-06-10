@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cyprus Exam Card"
+  short_description: "Create Cyprus exam Markdown cards."
+  default_prompt: "Create a Markdown exam card from the provided Greek/Russian question data, following the project card format."
