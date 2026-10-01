@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f1e9">
+  <title>Правительство Кипра — тренажёр</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f1e9;
+      --card: #fffefa;
+      --ink: #202c29;
+      --muted: #68736d;
+      --green: #245c4b;
+      --green-dark: #194436;
+      --line: #d9ded5;
+      --gold: #d39b42;
+      --wrong: #a43c32;
+      --right: #216a4b;
+      --shadow: 0 24px 70px rgb(37 53 43 / 10%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 20px;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 85% 8%, rgb(211 155 66 / 14%), transparent 28rem),
+        radial-gradient(ellipse at 8% 92%, rgb(36 92 75 / 10%), transparent 32rem),
+        var(--paper);
+    }
+
+    button, select { font: inherit; }
+
+    button:focus-visible, select:focus-visible {
+      outline: 3px solid #d39b42;
+      outline-offset: 3px;
+    }
+
+    .app { width: min(100%, 760px); margin: 0 auto; }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+
+    .brand-mark {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid rgb(36 92 75 / 18%);
+      border-radius: 50%;
+      color: var(--green);
+      background: rgb(255 254 250 / 75%);
+      font-size: 21px;
+    }
+
+    .brand-name { font-size: 13px; font-weight: 750; letter-spacing: .02em; }
+    .brand-note { margin-top: 2px; color: var(--muted); font-size: 11px; }
+
+    .language-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    select {
+      min-height: 38px;
+      padding: 0 30px 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--ink);
+      background: var(--card);
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid rgb(32 44 41 / 7%);
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .view { padding: clamp(24px, 6vw, 48px); }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+    h1 { max-width: 570px; margin-bottom: 12px; font-size: clamp(30px, 6vw, 48px); line-height: 1.07; letter-spacing: -.045em; }
+    h2 { margin-bottom: 12px; font-size: clamp(24px, 4vw, 34px); line-height: 1.16; letter-spacing: -.035em; }
+    .intro { max-width: 530px; margin-bottom: 30px; color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+    .mode-list { display: grid; gap: 12px; margin: 24px 0; }
+
+    .mode-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease, transform .15s ease;
+    }
+
+    .mode-option:hover { transform: translateY(-1px); border-color: #9cb8a8; }
+    .mode-option:has(input:checked) { border-color: var(--green); background: #f1f6f0; }
+    .mode-option input { width: 17px; height: 17px; margin: 2px 0 0; accent-color: var(--green); }
+    .mode-title { display: block; margin-bottom: 4px; font-size: 15px; font-weight: 750; }
+    .mode-description { color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+    .button {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 19px;
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 750;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .button:hover { transform: translateY(-1px); }
+    .button-primary { color: white; background: var(--green); }
+    .button-primary:hover { background: var(--green-dark); }
+    .button-secondary { border: 1px solid var(--line); color: var(--ink); background: transparent; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .setup-footnote { margin: 18px 0 0; color: var(--muted); font-size: 12px; }
+
+    .quiz-topline { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; color: var(--muted); font-size: 13px; font-weight: 650; }
+    .progress-track { height: 6px; overflow: hidden; margin-bottom: 34px; border-radius: 99px; background: #e9ece5; }
+    .progress-value { width: 0; height: 100%; border-radius: inherit; background: var(--green); transition: width .25s ease; }
+    .question-prompt { margin-bottom: 10px; color: var(--muted); font-size: 13px; }
+    .question-text { margin-bottom: 25px; font-size: clamp(22px, 4vw, 31px); line-height: 1.32; letter-spacing: -.025em; }
+    .answers { display: grid; gap: 10px; }
+
+    .answer {
+      display: flex;
+      min-height: 56px;
+      align-items: center;
+      gap: 13px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--ink);
+      background: white;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .15s ease, background .15s ease, transform .15s ease;
+    }
+
+    .answer:not(:disabled):hover { transform: translateY(-1px); border-color: #9cb8a8; background: #fafcf9; }
+    .answer:disabled { cursor: default; }
+    .answer-letter { display: grid; width: 29px; height: 29px; flex: 0 0 29px; place-items: center; border-radius: 9px; color: var(--muted); background: #f1f2ed; font-size: 12px; font-weight: 800; }
+    .answer-text { font-size: 14px; font-weight: 600; line-height: 1.42; }
+    .answer.is-correct { border-color: #83b39a; background: #edf7f0; }
+    .answer.is-correct .answer-letter { color: white; background: var(--right); }
+    .answer.is-wrong { border-color: #d59b94; background: #fcf0ee; }
+    .answer.is-wrong .answer-letter { color: white; background: var(--wrong); }
+
+    .feedback { margin-top: 18px; padding: 15px 16px; border-radius: 13px; background: #f1f5ef; }
+    .feedback[hidden] { display: none; }
+    .feedback-status { margin-bottom: 5px; font-size: 14px; font-weight: 800; }
+    .feedback-status.correct { color: var(--right); }
+    .feedback-status.incorrect { color: var(--wrong); }
+    .feedback-pair { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .feedback-pair strong { color: var(--ink); }
+
+    .result-score { display: flex; align-items: baseline; gap: 9px; margin: 22px 0; }
+    .result-number { color: var(--green); font-size: clamp(52px, 10vw, 76px); font-weight: 800; letter-spacing: -.07em; line-height: 1; }
+    .result-total { color: var(--muted); font-size: 18px; }
+    .mistakes { display: grid; gap: 9px; margin: 22px 0 0; padding: 0; list-style: none; }
+    .mistakes li { padding: 13px 14px; border: 1px solid var(--line); border-radius: 12px; font-size: 13px; line-height: 1.5; }
+    .mistakes strong { display: block; margin-bottom: 3px; }
+    .empty-mistakes { margin-top: 18px; padding: 15px; border-radius: 12px; color: var(--right); background: #edf7f0; font-size: 14px; font-weight: 700; }
+    .error-box { padding: 14px 16px; border: 1px solid #e6b7b0; border-radius: 12px; color: var(--wrong); background: #fcf0ee; font-size: 13px; line-height: 1.5; }
+    .footer { padding: 15px 4px 0; color: var(--muted); font-size: 11px; text-align: center; }
+    [hidden] { display: none !important; }
+
+    @media (max-width: 520px) {
+      body { padding: 18px 12px; }
+      .masthead { align-items: flex-start; }
+      .brand { gap: 9px; }
+      .brand-mark { width: 36px; height: 36px; font-size: 18px; }
+      .brand-name { font-size: 12px; }
+      .brand-note { font-size: 10px; }
+      .language-control { flex-direction: column; align-items: flex-end; gap: 4px; font-size: 10px; }
+      .language-control select { min-height: 34px; }
+      .card { border-radius: 17px; }
+      .view { padding: 25px 20px; }
+      .quiz-topline { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="masthead">
+      <div class="brand" aria-label="Тренажёр по правительству Кипра">
+        <div class="brand-mark" aria-hidden="true">✳</div>
+        <div>
+          <div class="brand-name" data-i18n="brand">Правительство Кипра</div>
+          <div class="brand-note" data-i18n="brandNote">Тренажёр по должностям</div>
+        </div>
+      </div>
+      <label class="language-control">
+        <span data-i18n="languageLabel">Язык</span>
+        <select id="language-select" aria-label="Язык теста">
+          <option value="ru">Русский</option>
+          <option value="el">Ελληνικά</option>
+        </select>
+      </label>
+    </header>
+
+    <section class="card" aria-live="polite">
+      <div id="setup-view" class="view">
+        <p class="eyebrow" data-i18n="eyebrow">34 карточки · один раунд</p>
+        <h1 data-i18n="title">Кто есть кто в правительстве?</h1>
+        <p class="intro" data-i18n="intro">Проверьте, насколько хорошо вы знаете людей и должности кипрского правительства. Выберите направление вопросов и пройдите весь набор.</p>
+        <p class="eyebrow" data-i18n="chooseMode">Выберите режим</p>
+        <div class="mode-list" role="radiogroup" aria-label="Режим теста">
+          <label class="mode-option">
+            <input type="radio" name="mode" value="position-to-person" checked>
+            <span>
+              <span class="mode-title" data-i18n="modeOneTitle">Должность → ФИО</span>
+              <span class="mode-description" data-i18n="modeOneDescription">Вопрос: кто занимает эту должность?</span>
+            </span>
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="mode" value="person-to-position">
+            <span>
+              <span class="mode-title" data-i18n="modeTwoTitle">ФИО → должность</span>
+              <span class="mode-description" data-i18n="modeTwoDescription">Вопрос: какую должность занимает этот человек?</span>
+            </span>
+          </label>
+        </div>
+        <div id="setup-error" class="error-box" role="alert" hidden></div>
+        <button id="start-button" class="button button-primary" type="button">
+          <span data-i18n="start">Начать тест</span><span aria-hidden="true">→</span>
+        </button>
+        <p class="setup-footnote" data-i18n="setupFootnote">34 вопроса · без таймера · результат только у вас</p>
+      </div>
+
+      <div id="quiz-view" class="view" hidden>
+        <div class="quiz-topline">
+          <span id="mode-label"></span>
+          <span id="progress-label"></span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Прогресс раунда" aria-valuemin="0" aria-valuemax="34" aria-valuenow="0">
+          <div id="progress-value" class="progress-value"></div>
+        </div>
+        <p id="question-prompt" class="question-prompt"></p>
+        <h2 id="question-text" class="question-text"></h2>
+        <div id="answers" class="answers"></div>
+        <div id="feedback" class="feedback" role="status" aria-live="polite" hidden>
+          <div id="feedback-status" class="feedback-status"></div>
+          <p id="feedback-pair" class="feedback-pair"></p>
+        </div>
+        <div id="quiz-actions" class="button-row" hidden>
+          <button id="next-button" class="button button-primary" type="button"></button>
+        </div>
+      </div>
+
+      <div id="result-view" class="view" hidden>
+        <p id="result-eyebrow" class="eyebrow"></p>
+        <h2 id="result-title"></h2>
+        <p id="result-description" class="intro"></p>
+        <div class="result-score"><span id="result-score" class="result-number"></span><span id="result-total" class="result-total"></span></div>
+        <div id="empty-mistakes" class="empty-mistakes" hidden></div>
+        <ul id="mistakes-list" class="mistakes"></ul>
+        <div class="button-row">
+          <button id="retry-button" class="button button-primary" type="button"></button>
+          <button id="restart-button" class="button button-secondary" type="button"></button>
+        </div>
+      </div>
+    </section>
+    <footer class="footer" data-i18n="footer">Данные для обучения встроены в эту страницу.</footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const officials = [
+      { positionEl: "Πρόεδρος της Δημοκρατίας", positionRu: "Президент Республики Кипр", personEl: "Νίκος Χριστοδουλίδης", personRu: "Никос Христодулидис" },
+      { positionEl: "Υπουργός Εξωτερικών", positionRu: "Министр иностранных дел", personEl: "Κωνσταντίνος Κόμπος", personRu: "Константинос Комбос" },
+      { positionEl: "Υπουργός Οικονομικών", positionRu: "Министр финансов", personEl: "Μάκης Κεραυνός", personRu: "Макис Керавнос" },
+      { positionEl: "Υπουργός Εσωτερικών", positionRu: "Министр внутренних дел", personEl: "Κωνσταντίνος Ιωάννου", personRu: "Константинос Иоанну" },
+      { positionEl: "Υπουργός Άμυνας", positionRu: "Министр обороны", personEl: "Βασίλης Πάλμας", personRu: "Василис Пальмас" },
+      { positionEl: "Υπουργός Παιδείας, Αθλητισμού και Νεολαίας", positionRu: "Министр образования, спорта и молодёжи", personEl: "Αθηνά Μιχαηλίδου", personRu: "Афина Михайлиду" },
+      { positionEl: "Υπουργός Μεταφορών, Επικοινωνιών και Έργων", positionRu: "Министр транспорта, коммуникаций и работ", personEl: "Ευανθία (Εύη) Τσολάκη", personRu: "Эванфия (Эви) Цолаки" },
+      { positionEl: "Υπουργός Ενέργειας, Εμπορίου και Βιομηχανίας", positionRu: "Министр энергетики, торговли и промышленности", personEl: "Μιχάλης Δαμιανός", personRu: "Михалис Дамианос" },
+      { positionEl: "Υπουργός Γεωργίας, Αγροτικής Ανάπτυξης και Περιβάλλοντος", positionRu: "Министр сельского хозяйства, сельского развития и окружающей среды", personEl: "Χρίστος Σενέκης", personRu: "Христос Сенекис" },
+      { positionEl: "Υπουργός Εργασίας και Κοινωνικών Ασφαλίσεων", positionRu: "Министр труда и социального страхования", personEl: "Μαρίνος Μουσιούττας", personRu: "Маринос Мусиуттас" },
+      { positionEl: "Υπουργός Δικαιοσύνης και Δημοσίας Τάξεως", positionRu: "Министр юстиции и общественного порядка", personEl: "Κώστας Φυτιρής", personRu: "Костас Фитирис" },
+      { positionEl: "Υπουργός Υγείας", positionRu: "Министр здравоохранения", personEl: "Νεόφυτος Χαραλαμπίδης", personRu: "Неофитос Хараламбидис" },
+      { positionEl: "Υφυπουργός παρά τω Προέδρω", positionRu: "Заместитель министра при Президенте", personEl: "Ειρήνη Πική", personRu: "Ирини Пики" },
+      { positionEl: "Υφυπουργός Ναυτιλίας", positionRu: "Заместитель министра судоходства", personEl: "Μαρίνα Χατζημανώλη", personRu: "Марина Хаджиманоли" },
+      { positionEl: "Υφυπουργός Τουρισμού", positionRu: "Заместитель министра туризма", personEl: "Κώστας Κουμής", personRu: "Костас Кумиc" },
+      { positionEl: "Υφυπουργός Έρευνας, Καινοτομίας και Ψηφιακής Πολιτικής", positionRu: "Заместитель министра исследований, инноваций и цифровой политики", personEl: "Νικόδημος Δαμιανού", personRu: "Никодимос Дамиану" },
+      { positionEl: "Υφυπουργός Κοινωνικής Πρόνοιας", positionRu: "Заместитель министра социального обеспечения", personEl: "Τίνα Παύλου", personRu: "Тина Павлу" },
+      { positionEl: "Υφυπουργός Πολιτισμού", positionRu: "Заместитель министра культуры", personEl: "Κλέα Χατζηστεφάνου Παπαέλληνα", personRu: "Клеа Хаджистефану Папаэллина" },
+      { positionEl: "Υφυπουργός Ευρωπαϊκών Θεμάτων", positionRu: "Заместитель министра по европейским вопросам", personEl: "Μαριλένα Ραουνά", personRu: "Марилена Рауна" },
+      { positionEl: "Υφυπουργός Μετανάστευσης και Διεθνούς Προστασίας", positionRu: "Заместитель министра миграции и международной защиты", personEl: "Νικόλας Α. Ιωαννίδης", personRu: "Николас А. Иоаннидис" },
+      { positionEl: "Κυβερνητικός Εκπρόσωπος", positionRu: "Правительственный представитель / пресс-секретарь правительства", personEl: "Κωνσταντίνος Λετυμπιώτης", personRu: "Константинос Летимбиотис" },
+      { positionEl: "Αναπληρωτής Κυβερνητικός Εκπρόσωπος", positionRu: "Заместитель правительственного представителя", personEl: "Γιάννης Αντωνίου", personRu: "Яннис Антониу" },
+      { positionEl: "Γραμματέας Υπουργικού Συμβουλίου", positionRu: "Секретарь Совета министров", personEl: "Πηνελόπη Παπαβασιλείου", personRu: "Пенелопи Папавасилиу" },
+      { positionEl: "Γενικός Εισαγγελέας της Δημοκρατίας", positionRu: "Генеральный прокурор Республики", personEl: "Γιώργος Λ. Σαββίδης", personRu: "Георгиос Л. Саввидис" },
+      { positionEl: "Βοηθός Γενικός Εισαγγελέας", positionRu: "Заместитель генерального прокурора", personEl: "Σάββας Α. Αγγελίδης", personRu: "Саввас А. Ангелидис" },
+      { positionEl: "Γενικός Ελεγκτής", positionRu: "Генеральный аудитор", personEl: "Ανδρέας Παπακωνσταντίνου", personRu: "Андреас Папаконстантину" },
+      { positionEl: "Διοικητής της Κεντρικής Τράπεζας της Κύπρου", positionRu: "Управляющий Центрального банка Кипра", personEl: "Χριστόδουλος Πατσαλίδης", personRu: "Христодулос Пацалидис" },
+      { positionEl: "Επίτροπος Διοικήσεως και Προστασίας των Ανθρωπίνων Δικαιωμάτων", positionRu: "Омбудсмен / уполномоченный по вопросам администрации и защиты прав человека", personEl: "Μαρία Στυλιανού-Λοττίδη", personRu: "Мария Стилиану-Лоттидис" },
+      { positionEl: "Αρχηγός Εθνικής Φρουράς", positionRu: "Главнокомандующий Национальной гвардией", personEl: "Εμμανουήλ Θεοδώρου", personRu: "Эммануил Теодору" },
+      { positionEl: "Αρχηγός Αστυνομίας", positionRu: "Начальник полиции", personEl: "Θεμιστός Αρναούτης", personRu: "Фемистос Арнаутис" },
+      { positionEl: "Επίτροπος του Πολίτη", positionRu: "Уполномоченный по делам граждан", personEl: "Ειρήνη Πογιατζή", personRu: "Ирини Пояджи" },
+      { positionEl: "Επίτροπος Ισότητας των Φύλων", positionRu: "Уполномоченный по вопросам гендерного равенства", personEl: "Τζόζη Χριστοδούλου", personRu: "Джози Христодулиду" },
+      { positionEl: "Επίτροπος Περιβάλλοντος και Ευημερίας των Ζώων", positionRu: "Уполномоченный по вопросам окружающей среды и благополучия животных", personEl: "Ηλίας Μυριάνθους", personRu: "Илиас Мириантус" },
+      { positionEl: "Επικεφαλής Επιστήμονας για Έρευνα, Καινοτομία και Τεχνολογία", positionRu: "Главный научный советник по исследованиям, инновациям и технологиям", personEl: "Δημήτρης Σκούρης", personRu: "Димитрис Скуридис" }
+    ];
+
+    const translations = {
+      ru: {
+        brand: "Правительство Кипра", brandNote: "Тренажёр по должностям", languageLabel: "Язык",
+        eyebrow: "34 карточки · один раунд", title: "Кто есть кто в правительстве?",
+        intro: "Проверьте, насколько хорошо вы знаете людей и должности кипрского правительства. Выберите направление вопросов и пройдите весь набор.",
+        chooseMode: "Выберите режим", modeOneTitle: "Должность → ФИО", modeOneDescription: "Вопрос: кто занимает эту должность?",
+        modeTwoTitle: "ФИО → должность", modeTwoDescription: "Вопрос: какую должность занимает этот человек?",
+        start: "Начать тест", setupFootnote: "34 вопроса · без таймера · результат только у вас", footer: "Данные для обучения встроены в эту страницу.",
+        positionToPerson: "Должность → ФИО", personToPosition: "ФИО → должность", whoPrompt: "Кто занимает должность:", positionPrompt: "Какую должность занимает:",
+        progress: (current, total) => `${current} из ${total}`, correct: "Верно!", incorrect: "Пока неверно.",
+        answerIs: "Правильный ответ:", next: "Следующий вопрос", finish: "К результатам", resultEyebrow: "Раунд завершён",
+        resultTitle: "Ваш результат", resultDescription: "Каждый вопрос — это ещё один шаг к уверенной памяти.",
+        outOf: total => `из ${total}`, mistakesTitle: "Записи для повторения", noMistakes: "Отличная работа — ошибок нет. Весь набор пройден верно.",
+        retry: "Повторить ошибки", retryUnavailable: "Ошибок нет — повторять нечего", restart: "Новый раунд", allAnswered: total => `Пройдено вопросов: ${total}`,
+        dataError: "Встроенный набор данных неполон или содержит совпадающие варианты. Проверьте записи в index.html.",
+        yourAnswer: "Ваш ответ:", correctAnswer: "Правильно:"
+      },
+      el: {
+        brand: "Κυβέρνηση της Κύπρου", brandNote: "Εξάσκηση στα αξιώματα", languageLabel: "Γλώσσα",
+        eyebrow: "34 κάρτες · ένας γύρος", title: "Ποιος κατέχει ποιο αξίωμα;",
+        intro: "Δοκιμάστε πόσο καλά γνωρίζετε τα πρόσωπα και τα αξιώματα της κυπριακής κυβέρνησης. Επιλέξτε κατεύθυνση ερωτήσεων και ολοκληρώστε όλο το σύνολο.",
+        chooseMode: "Επιλέξτε λειτουργία", modeOneTitle: "Αξίωμα → όνομα", modeOneDescription: "Ερώτηση: ποιος κατέχει αυτό το αξίωμα;",
+        modeTwoTitle: "Όνομα → αξίωμα", modeTwoDescription: "Ερώτηση: ποιο αξίωμα κατέχει αυτό το πρόσωπο;",
+        start: "Έναρξη τεστ", setupFootnote: "34 ερωτήσεις · χωρίς χρονόμετρο · το αποτέλεσμα είναι μόνο για εσάς", footer: "Τα δεδομένα εξάσκησης είναι ενσωματωμένα σε αυτή τη σελίδα.",
+        positionToPerson: "Αξίωμα → όνομα", personToPosition: "Όνομα → αξίωμα", whoPrompt: "Ποιος κατέχει το αξίωμα:", positionPrompt: "Ποιο αξίωμα κατέχει:",
+        progress: (current, total) => `${current} από ${total}`, correct: "Σωστά!", incorrect: "Όχι αυτή τη φορά.",
+        answerIs: "Η σωστή απάντηση:", next: "Επόμενη ερώτηση", finish: "Προβολή αποτελεσμάτων", resultEyebrow: "Ο γύρος ολοκληρώθηκε",
+        resultTitle: "Το αποτέλεσμά σας", resultDescription: "Κάθε ερώτηση είναι ένα ακόμη βήμα προς τη σίγουρη ανάκληση.",
+        outOf: total => `από ${total}`, mistakesTitle: "Κάρτες για επανάληψη", noMistakes: "Εξαιρετικά — δεν υπάρχουν λάθη. Ολοκληρώσατε σωστά όλο το σύνολο.",
+        retry: "Επανάληψη λαθών", retryUnavailable: "Δεν υπάρχουν λάθη για επανάληψη", restart: "Νέος γύρος", allAnswered: total => `Ερωτήσεις που απαντήθηκαν: ${total}`,
+        dataError: "Το ενσωματωμένο σύνολο δεδομένων είναι ελλιπές ή περιέχει διπλότυπες επιλογές. Ελέγξτε τις εγγραφές στο index.html.",
+        yourAnswer: "Η απάντησή σας:", correctAnswer: "Σωστό:"
+      }
+    };
+
+    const refs = {
+      language: document.getElementById("language-select"), setup: document.getElementById("setup-view"), quiz: document.getElementById("quiz-view"), result: document.getElementById("result-view"),
+      setupError: document.getElementById("setup-error"), start: document.getElementById("start-button"), modeLabel: document.getElementById("mode-label"), progressLabel: document.getElementById("progress-label"),
+      progress: document.getElementById("progress-value"), progressTrack: document.querySelector(".progress-track"), prompt: document.getElementById("question-prompt"), question: document.getElementById("question-text"), answers: document.getElementById("answers"),
+      feedback: document.getElementById("feedback"), feedbackStatus: document.getElementById("feedback-status"), feedbackPair: document.getElementById("feedback-pair"), quizActions: document.getElementById("quiz-actions"), next: document.getElementById("next-button"),
+      resultEyebrow: document.getElementById("result-eyebrow"), resultTitle: document.getElementById("result-title"), resultDescription: document.getElementById("result-description"), resultScore: document.getElementById("result-score"), resultTotal: document.getElementById("result-total"),
+      emptyMistakes: document.getElementById("empty-mistakes"), mistakes: document.getElementById("mistakes-list"), retry: document.getElementById("retry-button"), restart: document.getElementById("restart-button")
+    };
+
+    let language = "ru";
+    let mode = "position-to-person";
+    let queue = [];
+    let questionIndex = 0;
+    let mistakes = [];
+    let answered = false;
+    let isRetryRound = false;
+
+    function t(key, ...args) {
+      const value = translations[language][key];
+      return typeof value === "function" ? value(...args) : value;
+    }
+
+    function displayed(record, field) {
+      return record[`${field}${language === "ru" ? "Ru" : "El"}`];
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+    }
+
+    function shuffle(items) {
+      const result = [...items];
+      for (let index = result.length - 1; index > 0; index -= 1) {
+        const other = Math.floor(Math.random() * (index + 1));
+        [result[index], result[other]] = [result[other], result[index]];
+      }
+      return result;
+    }
+
+    function validateData() {
+      if (officials.length !== 34) return false;
+      for (const field of ["positionRu", "positionEl", "personRu", "personEl"]) {
+        const values = officials.map(record => record[field]?.trim());
+        if (values.some(value => !value) || new Set(values).size !== officials.length) return false;
+      }
+      return true;
+    }
+
+    function setView(view) {
+      refs.setup.hidden = view !== "setup";
+      refs.quiz.hidden = view !== "quiz";
+      refs.result.hidden = view !== "result";
+    }
+
+    function applyLanguage() {
+      language = refs.language.value;
+      document.documentElement.lang = language;
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        const translation = t(element.dataset.i18n);
+        if (translation) element.textContent = translation;
+      });
+      refs.setupError.textContent = t("dataError");
+      refs.setupError.hidden = true;
+      if (!refs.quiz.hidden) renderQuestion();
+      if (!refs.result.hidden) renderResults();
+    }
+
+    function selectedMode() {
+      return document.querySelector('input[name="mode"]:checked').value;
+    }
+
+    function startRound(records = officials, retry = false) {
+      if (!validateData()) {
+        refs.setupError.textContent = t("dataError");
+        refs.setupError.hidden = false;
+        setView("setup");
+        return;
+      }
+      mode = selectedMode();
+      queue = shuffle(records);
+      questionIndex = 0;
+      mistakes = [];
+      answered = false;
+      isRetryRound = retry;
+      setView("quiz");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const current = queue[questionIndex];
+      if (!current) return;
+      const total = queue.length;
+      const currentNumber = questionIndex + 1;
+      const promptField = mode === "position-to-person" ? "position" : "person";
+      const answerField = mode === "position-to-person" ? "person" : "position";
+      const prompt = displayed(current, promptField);
+      const correctValue = displayed(current, answerField);
+      const distractors = shuffle(officials.filter(record => record !== current))
+        .filter(record => displayed(record, answerField) !== correctValue)
+        .slice(0, 3)
+        .map(record => ({ record, value: displayed(record, answerField), correct: false }));
+
+      if (distractors.length !== 3) {
+        refs.setupError.textContent = t("dataError");
+        refs.setupError.hidden = false;
+        setView("setup");
+        return;
+      }
+
+      const options = shuffle([{ record: current, value: correctValue, correct: true }, ...distractors]);
+      refs.modeLabel.textContent = t(mode === "position-to-person" ? "positionToPerson" : "personToPosition");
+      refs.progressLabel.textContent = t("progress", currentNumber, total);
+      refs.progress.style.width = `${(currentNumber / total) * 100}%`;
+      refs.progressTrack.setAttribute("aria-valuemax", String(total));
+      refs.progressTrack.setAttribute("aria-valuenow", String(currentNumber - 1));
+      refs.prompt.textContent = t(mode === "position-to-person" ? "whoPrompt" : "positionPrompt");
+      refs.question.textContent = prompt;
+      refs.feedback.hidden = true;
+      refs.quizActions.hidden = true;
+      refs.answers.replaceChildren();
+      answered = false;
+
+      options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "answer";
+        button.dataset.correct = String(option.correct);
+        button.dataset.answer = option.value;
+        button.innerHTML = `<span class="answer-letter">${String.fromCharCode(65 + index)}</span><span class="answer-text">${escapeHtml(option.value)}</span>`;
+        button.addEventListener("click", () => submitAnswer(button, current));
+        refs.answers.append(button);
+      });
+      refs.answers.querySelector("button")?.focus({ preventScroll: true });
+    }
+
+    function submitAnswer(button, current) {
+      if (answered) return;
+      answered = true;
+      const correct = button.dataset.correct === "true";
+      refs.answers.querySelectorAll("button").forEach(answerButton => {
+        answerButton.disabled = true;
+        if (answerButton.dataset.correct === "true") answerButton.classList.add("is-correct");
+      });
+      if (!correct) {
+        button.classList.add("is-wrong");
+        mistakes.push({ record: current, selected: button.dataset.answer });
+      }
+
+      const person = displayed(current, "person");
+      const position = displayed(current, "position");
+      refs.feedbackStatus.className = `feedback-status ${correct ? "correct" : "incorrect"}`;
+      refs.feedbackStatus.textContent = t(correct ? "correct" : "incorrect");
+      refs.feedbackPair.innerHTML = `<strong>${escapeHtml(t("answerIs"))}</strong> ${escapeHtml(person)} — ${escapeHtml(position)}`;
+      refs.feedback.hidden = false;
+      refs.quizActions.hidden = false;
+      refs.next.textContent = questionIndex === queue.length - 1 ? t("finish") : t("next");
+      refs.next.focus({ preventScroll: true });
+    }
+
+    function advance() {
+      if (questionIndex < queue.length - 1) {
+        questionIndex += 1;
+        renderQuestion();
+      } else {
+        setView("result");
+        renderResults();
+      }
+    }
+
+    function renderResults() {
+      const total = queue.length;
+      refs.resultEyebrow.textContent = isRetryRound ? t("allAnswered", total) : t("resultEyebrow");
+      refs.resultTitle.textContent = t("resultTitle");
+      refs.resultDescription.textContent = t("resultDescription");
+      refs.resultScore.textContent = String(total - mistakes.length);
+      refs.resultTotal.textContent = t("outOf", total);
+      refs.mistakes.replaceChildren();
+      refs.emptyMistakes.hidden = mistakes.length !== 0;
+      refs.emptyMistakes.textContent = t("noMistakes");
+
+      mistakes.forEach(mistake => {
+        const item = document.createElement("li");
+        const person = displayed(mistake.record, "person");
+        const position = displayed(mistake.record, "position");
+        item.innerHTML = `<strong>${escapeHtml(mode === "position-to-person" ? position : person)}</strong><span>${escapeHtml(t("yourAnswer"))} ${escapeHtml(mistake.selected)}<br>${escapeHtml(t("correctAnswer"))} ${escapeHtml(mode === "position-to-person" ? person : position)}</span>`;
+        refs.mistakes.append(item);
+      });
+
+      refs.retry.disabled = mistakes.length === 0;
+      refs.retry.textContent = mistakes.length === 0 ? t("retryUnavailable") : t("retry");
+      refs.restart.textContent = t("restart");
+    }
+
+    refs.language.addEventListener("change", applyLanguage);
+    refs.start.addEventListener("click", () => startRound());
+    refs.next.addEventListener("click", advance);
+    refs.retry.addEventListener("click", () => {
+      if (mistakes.length > 0) startRound(mistakes.map(mistake => mistake.record), true);
+    });
+    refs.restart.addEventListener("click", () => {
+      setView("setup");
+      refs.setupError.hidden = true;
+    });
+    applyLanguage();
+  </script>
+</body>
+</html>
