@@ -177,6 +177,7 @@
     .answer:not(:disabled):hover { transform: translateY(-1px); border-color: #9cb8a8; background: #fafcf9; }
     .answer:disabled { cursor: default; }
     .answer-letter { display: grid; width: 29px; height: 29px; flex: 0 0 29px; place-items: center; border-radius: 9px; color: var(--muted); background: #f1f2ed; font-size: 12px; font-weight: 800; }
+    .answer-photo { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 50%; object-fit: cover; background: #f1f2ed; }
     .answer-text { font-size: 14px; font-weight: 600; line-height: 1.42; }
     .answer.is-correct { border-color: #83b39a; background: #edf7f0; }
     .answer.is-correct .answer-letter { color: white; background: var(--right); }
@@ -298,7 +299,7 @@
         </div>
       </div>
     </section>
-    <footer class="footer" data-i18n="footer">Данные для обучения встроены в эту страницу.</footer>
+    <footer class="footer" data-i18n="footer">Данные и фотографии хранятся рядом со страницей и доступны офлайн.</footer>
   </main>
 
   <script>
@@ -341,6 +342,19 @@
       { positionEl: "Επικεφαλής Επιστήμονας για Έρευνα, Καινοτομία και Τεχνολογία", positionRu: "Главный научный советник по исследованиям, инновациям и технологиям", personEl: "Δημήτρης Σκούρης", personRu: "Димитрис Скуридис" }
     ];
 
+    // Photo paths follow the same order as the officials array above.
+    const photoFiles = [
+      "photos/01-nikos-christodoulides.jpg", "photos/02-constantinos-kombos.jpg", "photos/03-makis-keravnos.jpg", "photos/04-constantinos-ioannou.jpg",
+      "photos/05-vasilis-palmas.jpg", "photos/06-athena-michaelidou.jpg", "photos/07-evie-tsolaki.jpg", "photos/08-michalis-damianos.jpg",
+      "photos/09-christos-senekis.png", "photos/10-marinos-moushouttas.jpg", "photos/11-costas-fytiris.jpg", "photos/12-neophytos-charalambides.jpg",
+      "photos/13-irene-piki.jpg", "photos/14-marina-hadjimanolis.jpg", "photos/15-kostas-koumi.jpg", "photos/16-nicodemos-damianou.jpg",
+      "photos/17-tina-pavlou.jpg", "photos/18-clea-hadjistephanou-papaellina.jpg", "photos/19-marilena-raouna.jpg", "photos/20-nicholas-ioannides.jpg",
+      "photos/21-konstantinos-letymbiotis.jpg", "photos/22-yiannis-antoniou.jpg", "photos/23-penelope-papavassiliou.jpg", "photos/24-georgios-savvides.jpg",
+      "photos/25-savvas-angelides.jpg", "photos/26-andreas-papaconstantinou.jpg", "photos/27-christodoulos-patsalides.jpg", "photos/28-maria-stylianou-lottides.jpg",
+      "photos/29-emmanouil-theodorou.jpg", "photos/30-themistos-arnaoutis.jpg", "photos/31-irene-poyiatzi.jpg", "photos/32-jozie-christodoulou.jpg",
+      "photos/33-ilias-myrianthous.jpg", "photos/34-dimitris-skourides.webp"
+    ];
+
     const translations = {
       ru: {
         brand: "Правительство Кипра", brandNote: "Тренажёр по должностям", languageLabel: "Язык",
@@ -348,7 +362,7 @@
         intro: "Проверьте, насколько хорошо вы знаете людей и должности кипрского правительства. Выберите направление вопросов и пройдите весь набор.",
         chooseMode: "Выберите режим", modeOneTitle: "Должность → ФИО", modeOneDescription: "Вопрос: кто занимает эту должность?",
         modeTwoTitle: "ФИО → должность", modeTwoDescription: "Вопрос: какую должность занимает этот человек?",
-        start: "Начать тест", setupFootnote: "34 вопроса · без таймера · результат только у вас", footer: "Данные для обучения встроены в эту страницу.",
+        start: "Начать тест", setupFootnote: "34 вопроса · без таймера · результат только у вас", footer: "Данные и фотографии хранятся рядом со страницей и доступны офлайн.",
         positionToPerson: "Должность → ФИО", personToPosition: "ФИО → должность", whoPrompt: "Кто занимает должность:", positionPrompt: "Какую должность занимает:",
         progress: (current, total) => `${current} из ${total}`, correct: "Верно!", incorrect: "Пока неверно.",
         answerIs: "Правильный ответ:", next: "Следующий вопрос", finish: "К результатам", resultEyebrow: "Раунд завершён",
@@ -364,7 +378,7 @@
         intro: "Δοκιμάστε πόσο καλά γνωρίζετε τα πρόσωπα και τα αξιώματα της κυπριακής κυβέρνησης. Επιλέξτε κατεύθυνση ερωτήσεων και ολοκληρώστε όλο το σύνολο.",
         chooseMode: "Επιλέξτε λειτουργία", modeOneTitle: "Αξίωμα → όνομα", modeOneDescription: "Ερώτηση: ποιος κατέχει αυτό το αξίωμα;",
         modeTwoTitle: "Όνομα → αξίωμα", modeTwoDescription: "Ερώτηση: ποιο αξίωμα κατέχει αυτό το πρόσωπο;",
-        start: "Έναρξη τεστ", setupFootnote: "34 ερωτήσεις · χωρίς χρονόμετρο · το αποτέλεσμα είναι μόνο για εσάς", footer: "Τα δεδομένα εξάσκησης είναι ενσωματωμένα σε αυτή τη σελίδα.",
+        start: "Έναρξη τεστ", setupFootnote: "34 ερωτήσεις · χωρίς χρονόμετρο · το αποτέλεσμα είναι μόνο για εσάς", footer: "Τα δεδομένα και οι φωτογραφίες βρίσκονται δίπλα στη σελίδα και είναι διαθέσιμα εκτός σύνδεσης.",
         positionToPerson: "Αξίωμα → όνομα", personToPosition: "Όνομα → αξίωμα", whoPrompt: "Ποιος κατέχει το αξίωμα:", positionPrompt: "Ποιο αξίωμα κατέχει:",
         progress: (current, total) => `${current} από ${total}`, correct: "Σωστά!", incorrect: "Όχι αυτή τη φορά.",
         answerIs: "Η σωστή απάντηση:", next: "Επόμενη ερώτηση", finish: "Προβολή αποτελεσμάτων", resultEyebrow: "Ο γύρος ολοκληρώθηκε",
@@ -416,7 +430,7 @@
     }
 
     function validateData() {
-      if (officials.length !== 34) return false;
+      if (officials.length !== 34 || photoFiles.length !== officials.length) return false;
       for (const field of ["positionRu", "positionEl", "personRu", "personEl"]) {
         const values = officials.map(record => record[field]?.trim());
         if (values.some(value => !value) || new Set(values).size !== officials.length) return false;
@@ -504,7 +518,10 @@
         button.className = "answer";
         button.dataset.correct = String(option.correct);
         button.dataset.answer = option.value;
-        button.innerHTML = `<span class="answer-letter">${String.fromCharCode(65 + index)}</span><span class="answer-text">${escapeHtml(option.value)}</span>`;
+        const personPhoto = answerField === "person"
+          ? `<img class="answer-photo" src="${photoFiles[officials.indexOf(option.record)]}" alt="" loading="lazy">`
+          : "";
+        button.innerHTML = `<span class="answer-letter">${String.fromCharCode(65 + index)}</span>${personPhoto}<span class="answer-text">${escapeHtml(option.value)}</span>`;
         button.addEventListener("click", () => submitAnswer(button, current));
         refs.answers.append(button);
       });
