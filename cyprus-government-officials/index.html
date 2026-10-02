@@ -156,7 +156,8 @@
     .progress-track { height: 6px; overflow: hidden; margin-bottom: 34px; border-radius: 99px; background: #e9ece5; }
     .progress-value { width: 0; height: 100%; border-radius: inherit; background: var(--green); transition: width .25s ease; }
     .question-prompt { margin-bottom: 10px; color: var(--muted); font-size: 13px; }
-    .question-text { margin-bottom: 25px; font-size: clamp(22px, 4vw, 31px); line-height: 1.32; letter-spacing: -.025em; }
+    .question-text { display: flex; align-items: center; gap: 16px; margin-bottom: 25px; font-size: clamp(22px, 4vw, 31px); line-height: 1.32; letter-spacing: -.025em; }
+    .question-photo { width: 72px; height: 72px; flex: 0 0 72px; border-radius: 50%; object-fit: cover; background: #f1f2ed; }
     .answers { display: grid; gap: 10px; }
 
     .answer {
@@ -275,7 +276,7 @@
           <div id="progress-value" class="progress-value"></div>
         </div>
         <p id="question-prompt" class="question-prompt"></p>
-        <h2 id="question-text" class="question-text"></h2>
+        <h2 class="question-text"><img id="question-photo" class="question-photo" alt="" hidden><span id="question-text"></span></h2>
         <div id="answers" class="answers"></div>
         <div id="feedback" class="feedback" role="status" aria-live="polite" hidden>
           <div id="feedback-status" class="feedback-status"></div>
@@ -393,7 +394,7 @@
     const refs = {
       language: document.getElementById("language-select"), setup: document.getElementById("setup-view"), quiz: document.getElementById("quiz-view"), result: document.getElementById("result-view"),
       setupError: document.getElementById("setup-error"), start: document.getElementById("start-button"), modeLabel: document.getElementById("mode-label"), progressLabel: document.getElementById("progress-label"),
-      progress: document.getElementById("progress-value"), progressTrack: document.querySelector(".progress-track"), prompt: document.getElementById("question-prompt"), question: document.getElementById("question-text"), answers: document.getElementById("answers"),
+      progress: document.getElementById("progress-value"), progressTrack: document.querySelector(".progress-track"), prompt: document.getElementById("question-prompt"), question: document.getElementById("question-text"), questionPhoto: document.getElementById("question-photo"), answers: document.getElementById("answers"),
       feedback: document.getElementById("feedback"), feedbackStatus: document.getElementById("feedback-status"), feedbackPair: document.getElementById("feedback-pair"), quizActions: document.getElementById("quiz-actions"), next: document.getElementById("next-button"),
       resultEyebrow: document.getElementById("result-eyebrow"), resultTitle: document.getElementById("result-title"), resultDescription: document.getElementById("result-description"), resultScore: document.getElementById("result-score"), resultTotal: document.getElementById("result-total"),
       emptyMistakes: document.getElementById("empty-mistakes"), mistakes: document.getElementById("mistakes-list"), retry: document.getElementById("retry-button"), restart: document.getElementById("restart-button")
@@ -507,6 +508,12 @@
       refs.progressTrack.setAttribute("aria-valuenow", String(currentNumber - 1));
       refs.prompt.textContent = t(mode === "position-to-person" ? "whoPrompt" : "positionPrompt");
       refs.question.textContent = prompt;
+      refs.questionPhoto.hidden = mode !== "person-to-position";
+      if (mode === "person-to-position") {
+        refs.questionPhoto.src = photoFiles[officials.indexOf(current)];
+      } else {
+        refs.questionPhoto.removeAttribute("src");
+      }
       refs.feedback.hidden = true;
       refs.quizActions.hidden = true;
       refs.answers.replaceChildren();
