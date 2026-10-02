@@ -71,22 +71,10 @@
     .brand-name { font-size: 13px; font-weight: 750; letter-spacing: .02em; }
     .brand-note { margin-top: 2px; color: var(--muted); font-size: 11px; }
 
-    .language-control {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    select {
-      min-height: 38px;
-      padding: 0 30px 0 11px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      color: var(--ink);
-      background: var(--card);
-    }
+    .language-control { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+    .language-switch { display: flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 12px; background: rgb(255 254 250 / 75%); }
+    .language-button { min-height: 32px; padding: 0 10px; border: 1px solid transparent; border-radius: 9px; color: var(--muted); background: transparent; cursor: pointer; font-size: 12px; font-weight: 650; transition: color .15s ease, background .15s ease, border-color .15s ease; }
+    .language-button[aria-pressed="true"] { border-color: var(--line); color: var(--ink); background: var(--card); box-shadow: 0 1px 2px rgb(32 44 41 / 7%); }
 
     .card {
       overflow: hidden;
@@ -212,7 +200,7 @@
       .brand-name { font-size: 12px; }
       .brand-note { font-size: 10px; }
       .language-control { flex-direction: column; align-items: flex-end; gap: 4px; font-size: 10px; }
-      .language-control select { min-height: 34px; }
+      .language-button { padding: 0 8px; font-size: 11px; }
       .card { border-radius: 17px; }
       .view { padding: 25px 20px; }
       .quiz-topline { font-size: 12px; }
@@ -229,13 +217,13 @@
           <div class="brand-note" data-i18n="brandNote">Тренажёр по должностям</div>
         </div>
       </div>
-      <label class="language-control">
+      <div class="language-control">
         <span data-i18n="languageLabel">Язык</span>
-        <select id="language-select" aria-label="Язык теста">
-          <option value="ru">Русский</option>
-          <option value="el">Ελληνικά</option>
-        </select>
-      </label>
+        <div class="language-switch" role="group" aria-label="Язык теста">
+          <button class="language-button" type="button" data-language="ru" aria-pressed="true">Русский</button>
+          <button class="language-button" type="button" data-language="el" aria-pressed="false">Ελληνικά</button>
+        </div>
+      </div>
     </header>
 
     <section class="card" aria-live="polite">
@@ -417,7 +405,7 @@
     };
 
     const refs = {
-      language: document.getElementById("language-select"), setup: document.getElementById("setup-view"), quiz: document.getElementById("quiz-view"), result: document.getElementById("result-view"),
+      languageButtons: [...document.querySelectorAll(".language-button")], setup: document.getElementById("setup-view"), quiz: document.getElementById("quiz-view"), result: document.getElementById("result-view"),
       setupError: document.getElementById("setup-error"), start: document.getElementById("start-button"), modeLabel: document.getElementById("mode-label"), progressLabel: document.getElementById("progress-label"),
       progress: document.getElementById("progress-value"), progressTrack: document.querySelector(".progress-track"), prompt: document.getElementById("question-prompt"), question: document.getElementById("question-text"), questionPhoto: document.getElementById("question-photo"), answers: document.getElementById("answers"),
       feedback: document.getElementById("feedback"), feedbackStatus: document.getElementById("feedback-status"), feedbackPair: document.getElementById("feedback-pair"), quizActions: document.getElementById("quiz-actions"), next: document.getElementById("next-button"),
@@ -470,8 +458,11 @@
       refs.result.hidden = view !== "result";
     }
 
-    function applyLanguage() {
-      language = refs.language.value;
+    function applyLanguage(nextLanguage = language) {
+      language = nextLanguage;
+      refs.languageButtons.forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.language === language));
+      });
       document.documentElement.lang = language;
       document.querySelectorAll("[data-i18n]").forEach(element => {
         const translation = t(element.dataset.i18n);
@@ -618,7 +609,9 @@
       refs.restart.textContent = t("restart");
     }
 
-    refs.language.addEventListener("change", applyLanguage);
+    refs.languageButtons.forEach(button => {
+      button.addEventListener("click", () => applyLanguage(button.dataset.language));
+    });
     refs.start.addEventListener("click", () => startRound());
     refs.next.addEventListener("click", advance);
     refs.retry.addEventListener("click", () => {
